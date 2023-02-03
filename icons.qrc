@@ -1,2 +1,8 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/editor/icons">
+        <file>icons/assets.png</file>
+        <file>icons/anims.svg</file>
+        <file>icons/play-arrow.svg</file>
+        <file>icons/Particle.png</file>
+    </qresource>
+</RCC>

@@ -4,8 +4,10 @@
 
 class Weapon
 {
-public:
-    Weapon();
+    public:
+        Weapon();
+
+
 };
 
 #endif // WEAPON_H

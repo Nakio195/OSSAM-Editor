@@ -1,39 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <author/>
- <comment/>
- <exportmacro/>
  <class>AnimationCreator</class>
  <widget class="QDialog" name="AnimationCreator">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>430</width>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Animation Creator</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>240</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
+  <property name="windowIcon">
+   <iconset resource="../icons.qrc">
+    <normaloff>:/editor/icons/icons/anims.svg</normaloff>:/editor/icons/icons/anims.svg</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="4" column="3" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" rowspan="2">
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0" rowspan="3">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>250</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Animation</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="9" column="0" colspan="3">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
+       <widget class="QSpinBox" name="dbl_height">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>9999</number>
+        </property>
+        <property name="value">
+         <number>20</number>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1" colspan="2">
+       <widget class="QComboBox" name="cmb_Mode"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QToolButton" name="toolButton">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Run mode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Hauteur</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1" colspan="2">
+       <widget class="QDoubleSpinBox" name="dbl_period">
+        <property name="minimum">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>99999.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.200000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QLabel" name="lbl_property">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="ln_Asset">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Largeur</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Frames</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Periode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Nom</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1" colspan="2">
+       <widget class="QSpinBox" name="dbl_frames">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Texture</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1" colspan="2">
+       <widget class="QSpinBox" name="dbl_width">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>9999</number>
+        </property>
+        <property name="value">
+         <number>20</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="ln_Name"/>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Couleur de fond</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QToolButton" name="btn_color">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QLabel" name="clr_viewer">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="4">
+    <widget class="QCommandLinkButton" name="btn_Play">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Play</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../icons.qrc">
+       <normaloff>:/editor/icons/icons/play-arrow.svg</normaloff>:/editor/icons/icons/play-arrow.svg</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" colspan="3">
+    <widget class="AnimationViewer" name="viewer" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>50</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="4">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::MinimumExpanding</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="2" colspan="3">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
  </widget>
- <pixmapfunction/>
- <resources/>
+ <customwidgets>
+  <customwidget>
+   <class>AnimationViewer</class>
+   <extends>QWidget</extends>
+   <header>AnimationManager/AnimationViewer.h</header>
+   <container>1</container>
+   <slots>
+    <slot>play()</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>ln_Name</tabstop>
+  <tabstop>ln_Asset</tabstop>
+  <tabstop>toolButton</tabstop>
+  <tabstop>dbl_width</tabstop>
+  <tabstop>dbl_height</tabstop>
+  <tabstop>dbl_frames</tabstop>
+  <tabstop>dbl_period</tabstop>
+  <tabstop>cmb_Mode</tabstop>
+  <tabstop>btn_Play</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
@@ -42,8 +318,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>420</x>
+     <y>341</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -58,8 +334,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>420</x>
+     <y>341</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -67,5 +343,138 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>dbl_width</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>AnimationCreator</receiver>
+   <slot>parametersEdited()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>221</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>152</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dbl_height</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>AnimationCreator</receiver>
+   <slot>parametersEdited()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>194</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>48</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dbl_frames</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>AnimationCreator</receiver>
+   <slot>parametersEdited()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>221</x>
+     <y>167</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>180</x>
+     <y>318</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dbl_period</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>AnimationCreator</receiver>
+   <slot>parametersEdited()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>221</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>179</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmb_Mode</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>AnimationCreator</receiver>
+   <slot>parametersEdited()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>221</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ln_Asset</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>AnimationCreator</receiver>
+   <slot>parametersEdited()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>190</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>164</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AnimationCreator</receiver>
+   <slot>browseAsset()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>221</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>156</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_color</sender>
+   <signal>clicked()</signal>
+   <receiver>AnimationCreator</receiver>
+   <slot>setBackgroundColor()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>245</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>207</x>
+     <y>245</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>parametersEdited()</slot>
+  <slot>browseAsset()</slot>
+  <slot>setBackgroundColor()</slot>
+ </slots>
 </ui>
