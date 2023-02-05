@@ -34,8 +34,15 @@ win32
 
 
 SOURCES += main.cpp\
+        AnimationManager/Animation.cpp \
+        AnimationManager/AnimationModel.cpp \
+        AnimationManager/AnimationViewer.cpp \
         Asset.cpp \
         AssetModel.cpp \
+        FileManager/File.cpp \
+        FileManager/FileManager.cpp \
+        FileManager/FileModel.cpp \
+        FileManager/FileViewer.cpp \
         MainWindow.cpp \
         AnimationManager/Animation.cpp \
         AnimationManager/AnimationCreator.cpp \
@@ -61,7 +68,14 @@ SOURCES += main.cpp\
         widgets/ClickableLabel.cpp
 
 HEADERS  += Asset.h \
+        AnimationManager/Animation.h \
+        AnimationManager/AnimationModel.h \
+        AnimationManager/AnimationViewer.h \
         AssetModel.h \
+        FileManager/File.h \
+        FileManager/FileManager.h \
+        FileManager/FileModel.h \
+        FileManager/FileViewer.h \
         MainWindow.h \
         AnimationManager/Animation.h \
         AnimationManager/AnimationCreator.h \
@@ -90,6 +104,8 @@ FORMS    += MainWindow.ui \
         AnimationManager/AnimationCreator.ui \
         AnimationManager/AnimationManager.ui \
         FileManager/FileManager.ui \
+        FileManager/FileManager.ui \
+        FileManager/FileViewer.ui \
         FileManager/FileViewer.ui \
         ParticleManager/ParticleCreator.ui \
         ParticleManager/ParticleManager.ui \
