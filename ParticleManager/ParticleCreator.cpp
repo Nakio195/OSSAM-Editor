@@ -46,9 +46,9 @@ void ParticleCreator::pickColor()
 
 void ParticleCreator::browseAsset()
 {
-    Asset temp = AssetPicker::pick(mAssets, this, Asset::Texture);
-    mParticle.setTextureUID(temp.getUID());
-    ui->ln_texture->setText(temp.getName());
+    Asset *temp = AssetPicker::pick(mAssets, this, File::Texture);
+    mParticle.setTextureUID(temp->getUID());
+    ui->ln_texture->setText(temp->getName());
 }
 
 Particle ParticleCreator::create(AssetModel* assets, QWidget *parent)

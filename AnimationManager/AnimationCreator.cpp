@@ -4,10 +4,10 @@
 #include <QColorDialog>
 #include "widgets/AssetPicker.h"
 
-AnimationCreator::AnimationCreator(FileModel* files, QWidget *parent) :
+AnimationCreator::AnimationCreator(AssetModel *assets, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AnimationCreator),
-    mFiles(files)
+    mAssets(assets)
 {
     ui->setupUi(this);
     mTexture = File(File::Invalid);
@@ -32,7 +32,7 @@ void AnimationCreator::textureChanged(const sf::Texture& texture)
 
 void AnimationCreator::browseFile()
 {
-    mTexture = AssetPicker::pick(mFiles, this, File::Texture);
+    mTexture = *static_cast<File*>(AssetPicker::pick(mAssets, this, Asset::Invalid));
 
     if(mTexture.getType() != File::Invalid)
     {
@@ -72,9 +72,11 @@ void AnimationCreator::setBackgroundColor()
     ui->viewer->setBackgroundColor(QColorDialog::getColor());
 }
 
-Animation AnimationCreator::create(FileModel *Files, QWidget *parent)
+Animation AnimationCreator::create(AssetModel *assets, QWidget *parent)
 {
-    AnimationCreator picker(Files, parent);
+    AnimationCreator picker(assets, parent);
+
+    assets->setType(Asset::Animation);
 
     if(picker.exec() == QDialog::Accepted)
         return picker.getAnimation();

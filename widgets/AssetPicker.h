@@ -17,16 +17,18 @@ class AssetPicker : public QDialog
 
     public:
         explicit AssetPicker(AssetModel* assets, QWidget *parent = nullptr, Asset::Type type = Asset::Invalid);
+        explicit AssetPicker(AssetModel* assets, QWidget *parent = nullptr, File::Type type = File::Invalid);
         ~AssetPicker();
 
-        static Asset pick(AssetModel* assets, QWidget *parent = nullptr, Asset::Type type = Asset::Invalid);
+        static Asset *pick(AssetModel* assets, QWidget *parent = nullptr, Asset::Type type = Asset::Invalid);
+        static Asset *pick(AssetModel* assets, QWidget *parent = nullptr, File::Type type = File::Invalid);
 
     private slots:
         void selectionChanged(const QModelIndex&, const QModelIndex& column);
         void search(QString string);
 
     private:
-        Asset selectedAsset();
+        Asset *selectedAsset();
 
     private:
         Ui::Dialog *ui;

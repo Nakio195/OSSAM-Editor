@@ -10,10 +10,9 @@ class Asset
         typedef unsigned long long UID;
 
         enum Type{
-            Texture,
-            Sound,
-            Shader,
-            Font,
+            Animation,
+            File,
+            Particle,
             Invalid,
             TypeCount
         };
@@ -23,27 +22,24 @@ class Asset
         virtual ~Asset();
 
         UID getUID() const;
+        static void setCurrentUID(unsigned long long uid);
 
-        void setType(Asset::Type type);
-        Asset::Type getType() const;
+        void setBaseType(Asset::Type type);
+        Asset::Type getBaseType() const;
 
         void setName(QString name);
         QString getName() const;
 
     public:
-        static void setCurrentUID(unsigned long long uid);
         static QString TypeToText(Asset::Type type);
         static Asset::Type TypeFromText(QString text);
 
-        virtual void fromJSON(const QJsonObject& json);
-        virtual void toJSON(QJsonObject& asset) const;
-
-    private:
+    protected:
         static UID sUID;
 
         QString mName;
-        unsigned long long mID;
-        Asset::Type mType;
+        unsigned long long mUID;
+        Asset::Type mBaseType;
 };
 
 #endif // ASSET_H

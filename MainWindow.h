@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QAction>
+#include <QMdiSubWindow>
 #include "widgets/OSSAM_World.h"
 
 #include "FileManager/FileManager.h"
@@ -30,6 +31,9 @@ class MainWindow : public QMainWindow
         explicit MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
 
+    public slots:
+        void windowChanged(QMdiSubWindow *window);
+
     private slots:
         void saveAssets();
         void openAssetManager();
@@ -43,21 +47,17 @@ class MainWindow : public QMainWindow
         void openParticleManager();
         void closeParticleManager();
 
-    private:
 
     private:
         Ui::MainWindow *ui;
 
         OSSAM::World *mWorld;
 
+        AssetModel mAssets;
+
         FileManager* mFileManager;
-        FileModel mFiles;
-
         AnimationManager *mAnimationManager;
-        AnimationModel mAnimations;
-
         ParticleManager *mParticleManager;
-        ParticleModel mParticles;
 
         QString JSON_AssetPath;
         QString JSON_AnimationPath;

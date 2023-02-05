@@ -5,7 +5,7 @@ AssetPicker::AssetPicker(AssetModel *assets, QWidget *parent, Asset::Type type) 
 {
     ui->setupUi(this);
 
-    ui->assetViewer->hide();
+    ui->fileViewer->hide();
     ui->ln_search->setFocus();
 
     mSearched = false;
@@ -14,6 +14,7 @@ AssetPicker::AssetPicker(AssetModel *assets, QWidget *parent, Asset::Type type) 
 
     if(type != Asset::Invalid)
     {
+        mAssets->setType(type);
         mFiltered = true;
         mFilter.setSourceModel(mAssets);
         mFilter.setFilterKeyColumn(AssetModel::Type);
@@ -25,6 +26,7 @@ AssetPicker::AssetPicker(AssetModel *assets, QWidget *parent, Asset::Type type) 
 
     else
     {
+        mAssets->setType(Asset::Invalid);
         mFiltered = false;
         mSearch.setSourceModel(mAssets);
         ui->list->setModel(mAssets);
@@ -35,7 +37,47 @@ AssetPicker::AssetPicker(AssetModel *assets, QWidget *parent, Asset::Type type) 
 
     connect(ui->list->selectionModel(), QOverload<const QModelIndex&, const QModelIndex&>::of(&QItemSelectionModel::currentRowChanged), this, &AssetPicker::selectionChanged);
     connect(ui->ln_search, &QLineEdit::textEdited, this, &AssetPicker::search);
-    connect(ui->checkBox, &QCheckBox::toggled, ui->assetViewer, &QWidget::setVisible);
+    connect(ui->checkBox, &QCheckBox::toggled, ui->fileViewer, &QWidget::setVisible);
+    connect(ui->list, &QListView::doubleClicked, this, &QDialog::accept);
+}
+
+AssetPicker::AssetPicker(AssetModel *assets, QWidget *parent, File::Type type) : QDialog(parent), ui(new Ui::Dialog), mAssets(assets)
+{
+    ui->setupUi(this);
+
+    ui->fileViewer->hide();
+    ui->ln_search->setFocus();
+
+    mSearched = false;
+    mSearch.setFilterCaseSensitivity(Qt::CaseInsensitive);
+    mSearch.setFilterKeyColumn(AssetModel::Name);
+
+    if(type != File::Invalid)
+    {
+        mAssets->setType(Asset::File);
+        mFiltered = true;
+        mFilter.setSourceModel(mAssets);
+        mFilter.setFilterKeyColumn(AssetModel::Type);
+        mFilter.setFilterFixedString(File::TypeToText(type));
+
+        mSearch.setSourceModel(&mFilter);
+        ui->list->setModel(&mFilter);
+    }
+
+    else
+    {
+        mAssets->setType(Asset::Invalid);
+        mFiltered = false;
+        mSearch.setSourceModel(mAssets);
+        ui->list->setModel(mAssets);
+    }
+
+    ui->list->setModelColumn(AssetModel::Name);
+    ui->list->selectAll();
+
+    connect(ui->list->selectionModel(), QOverload<const QModelIndex&, const QModelIndex&>::of(&QItemSelectionModel::currentRowChanged), this, &AssetPicker::selectionChanged);
+    connect(ui->ln_search, &QLineEdit::textEdited, this, &AssetPicker::search);
+    connect(ui->checkBox, &QCheckBox::toggled, ui->fileViewer, &QWidget::setVisible);
     connect(ui->list, &QListView::doubleClicked, this, &QDialog::accept);
 }
 
@@ -46,7 +88,7 @@ AssetPicker::~AssetPicker()
 
 void AssetPicker::selectionChanged(const QModelIndex&, const QModelIndex& )
 {
-    ui->assetViewer->setAsset(selectedAsset());
+    ui->fileViewer->setFile(*dynamic_cast<File*>(selectedAsset()));
 }
 
 void AssetPicker::search(QString string)
@@ -84,29 +126,39 @@ void AssetPicker::search(QString string)
     }
 }
 
-Asset AssetPicker::selectedAsset()
+Asset* AssetPicker::selectedAsset()
 {
     QModelIndex row = ui->list->selectionModel()->currentIndex();
 
     if(mFiltered && !mSearched)
-        return mAssets->getByUID(mAssets->getUID(mFilter.mapToSource(row)));
+        return mAssets->getByUID(Asset::Invalid, mAssets->getUID(mFilter.mapToSource(row)));
 
     else if(mFiltered && mSearched)
-        return mAssets->getByUID(mAssets->getUID(mFilter.mapToSource(mSearch.mapToSource(row))));
+        return mAssets->getByUID(Asset::Invalid, mAssets->getUID(mFilter.mapToSource(mSearch.mapToSource(row))));
 
     else if(!mFiltered && mSearched)
-        return mAssets->getByUID(mAssets->getUID(mSearch.mapToSource(row)));
+        return mAssets->getByUID(Asset::Invalid, mAssets->getUID(mSearch.mapToSource(row)));
 
     else
-        return mAssets->getByUID(mAssets->getUID(row));
+        return mAssets->getByUID(Asset::Invalid, mAssets->getUID(row));
 }
 
-Asset AssetPicker::pick(AssetModel* assets, QWidget *parent, Asset::Type type)
+Asset* AssetPicker::pick(AssetModel* assets, QWidget *parent, Asset::Type type)
 {
     AssetPicker picker(assets, parent, type);
 
     if(picker.exec() == QDialog::Accepted)
         return picker.selectedAsset();
     else
-        return Asset(Asset::Invalid);
+        return nullptr;
+}
+
+Asset* AssetPicker::pick(AssetModel* assets, QWidget *parent, File::Type type)
+{
+    AssetPicker picker(assets, parent, type);
+
+    if(picker.exec() == QDialog::Accepted)
+        return picker.selectedAsset();
+    else
+        return nullptr;
 }

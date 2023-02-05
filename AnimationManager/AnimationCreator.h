@@ -34,8 +34,7 @@ class AnimationCreator : public QDialog
 
     private:
         Ui::AnimationCreator *ui;
-        FileModel* mFiles;
-        AssetModel *mAssets;
+        AssetModel* mAssets;
 
         File mTexture;
         Animation mAnimation;

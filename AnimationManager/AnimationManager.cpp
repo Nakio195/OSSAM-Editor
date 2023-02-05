@@ -5,23 +5,25 @@
 #include <QCloseEvent>
 #include "AnimationCreator.h"
 
-AnimationManager::AnimationManager(AnimationModel* anims, FileModel *assets,  QWidget *parent) :
+AnimationManager::AnimationManager(AssetModel* assets, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AnimationManager),
-    mFiles(assets),
-    mAnimatons(anims)
+    mAssets(assets)
 {
     ui->setupUi(this);
 
     ui->btn_Save->setEnabled(false);
 
-    ui->table->setModel(mAnimatons);
+    mAssets->setType(Asset::Animation);
+    ui->table->setModel(mAssets);
     ui->table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    ui->table->horizontalHeader()->setSortIndicator(AnimationModel::Name, Qt::AscendingOrder);
-    ui->table->sortByColumn(AnimationModel::Name, Qt::AscendingOrder);
-    mSearchProxy.setSourceModel(mAnimatons);
-    mSearchProxy.setFilterKeyColumn(AnimationModel::Name);
+    ui->table->horizontalHeader()->setSortIndicator(AssetModel::Name, Qt::AscendingOrder);
+    ui->table->sortByColumn(AssetModel::Name, Qt::AscendingOrder);
+    mSearchProxy.setSourceModel(mAssets);
+    mSearchProxy.setFilterKeyColumn(AssetModel::Name);
     mSearchProxy.setFilterCaseSensitivity(Qt::CaseInsensitive);
+
+    setFocusPolicy(Qt::FocusPolicy::TabFocus);
 
     connect(ui->table->selectionModel(), QOverload<const QModelIndex&, const QModelIndex&>::of(&QItemSelectionModel::currentRowChanged), this, &AnimationManager::selectionChanged);
     connect(ui->btn_play, &QAbstractButton::clicked, ui->viewer, &AnimationViewer::play);
@@ -30,6 +32,21 @@ AnimationManager::AnimationManager(AnimationModel* anims, FileModel *assets,  QW
 AnimationManager::~AnimationManager()
 {
     delete ui;
+}
+
+void AnimationManager::focusChange(QMdiSubWindow* window)
+{
+    if(window != nullptr)
+    {
+        if(window->widget() == this)
+        {
+            mAssets->setType(Asset::Animation);
+            ui->table->setUpdatesEnabled(true);
+        }
+
+        else
+            ui->table->setUpdatesEnabled(false);
+    }
 }
 
 void AnimationManager::closeEvent(QCloseEvent *event)
@@ -53,7 +70,7 @@ void AnimationManager::search(QString string)
 {
     if(string == QString(""))
     {
-        ui->table->setModel(mAnimatons);
+        ui->table->setModel(mAssets);
     }
 
     else
@@ -68,18 +85,24 @@ void AnimationManager::selectionChanged(const QModelIndex &current, const QModel
     if(!current.isValid())
         return;
 
-    Animation anim = mAnimatons->getAnimation(current.row());
-    ui->viewer->setTexture(mFiles->getByUID(anim.getTextureUID()).getPath());
-    ui->viewer->setAnimation(anim);
+    Animation anim = mAssets->getAnimation(current.row());
+
+    if(anim.getBaseType() != Asset::Invalid)
+    {
+        ui->viewer->setTexture(dynamic_cast<File*>(mAssets->getByUID(Asset::File, anim.getTextureUID()))->getPath());
+        ui->viewer->setAnimation(anim);
+    }
 }
 
 void AnimationManager::create()
 {
-    Animation anim = AnimationCreator::create(mFiles, this);
+    ui->table->setUpdatesEnabled(false);
+    Animation anim = AnimationCreator::create(mAssets, this);
+    ui->table->setUpdatesEnabled(true);
 
     if(anim.getName() != QString("Invalid"))
     {
-        mAnimatons->addAnimation(anim);
+        mAssets->addAnimation(anim);
         ui->btn_Save->setEnabled(true);
     }
 }
@@ -88,8 +111,8 @@ void AnimationManager::remove()
 {
     if(ui->table->selectionModel()->hasSelection())
     {
-        Animation::UID currentUID = mAnimatons->getAnimation(ui->table->selectionModel()->selectedRows().first().row()).getUID();
-        mAnimatons->removeAnimation(currentUID);
+        Animation::UID currentUID = mAssets->getAnimation(ui->table->selectionModel()->selectedRows().first().row()).getUID();
+        mAssets->removeAnimation(currentUID);
         ui->btn_Save->setEnabled(true);
     }
 }
@@ -99,3 +122,4 @@ void AnimationManager::save()
     emit requestSave();
     ui->btn_Save->setEnabled(false);
 }
+

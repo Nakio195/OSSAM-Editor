@@ -10,9 +10,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     JSON_AnimationPath = QString("data/animations.json");
     JSON_AssetPath = QString("data/assets.json");
     JSON_ParticlePath = QString("data/particles.json");
-    mFiles.loadFromFile(JSON_AssetPath);
-    mAnimations.loadFromFile(JSON_AnimationPath);
-    mParticles.loadFromFile(JSON_ParticlePath);
+    mAssets.loadFromFile(JSON_AssetPath);
+    mAssets.loadFromFile(JSON_AnimationPath);
+    mAssets.loadFromFile(JSON_ParticlePath);
 
     mFileManager = nullptr;
     mAnimationManager = nullptr;
@@ -23,11 +23,34 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->actionAssets_Manager, &QAction::triggered, this, &MainWindow::openAssetManager);
     connect(ui->actionAnimations, &QAction::triggered, this, &MainWindow::openAnimationEditor);
     connect(ui->actionParticles, &QAction::triggered, this, &MainWindow::openParticleManager);
+    //connect(ui->MdiArea, &QMdiArea::subWindowActivated, this, &MainWindow::windowChanged);
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::windowChanged(QMdiSubWindow *window)
+{
+    if(window != nullptr)
+    {
+        if(window->widget() == mFileManager)
+        {
+            mAssets.setType(Asset::File);
+        }
+
+        if(window->widget() == mAnimationManager)
+        {
+            mAssets.setType(Asset::Animation);
+        }
+
+        if(window->widget() == mParticleManager)
+        {
+            mAssets.setType(Asset::Particle);
+        }
+    }
 }
 
 void MainWindow::openAssetManager()
@@ -40,9 +63,10 @@ void MainWindow::openAssetManager()
 
     else
     {
-        mFileManager = new FileManager(&mFiles);
+        mFileManager = new FileManager(&mAssets);
         connect(mFileManager, &FileManager::requestSave, this, &MainWindow::saveAssets);
         connect(mFileManager, &FileManager::destroyed, this, &MainWindow::closeAssetManager);
+        connect(ui->MdiArea, &QMdiArea::subWindowActivated, mFileManager, &FileManager::focusChange);
         ui->MdiArea->addSubWindow(mFileManager);
         mFileManager->show();
     }
@@ -64,9 +88,10 @@ void MainWindow::openParticleManager()
 
     else
     {
-        mParticleManager = new ParticleManager(&mParticles, &mFiles);
+        mParticleManager = new ParticleManager(&mAssets);
         connect(mParticleManager, &ParticleManager::requestSave, this, &MainWindow::saveParticles);
         connect(mParticleManager, &ParticleManager::destroyed, this, &MainWindow::closeParticleManager);
+        connect(ui->MdiArea, &QMdiArea::subWindowActivated, mParticleManager, &ParticleManager::focusChange);
         ui->MdiArea->addSubWindow(mParticleManager);
         mParticleManager->show();
     }
@@ -88,9 +113,10 @@ void MainWindow::openAnimationEditor()
 
     else
     {
-        mAnimationManager = new AnimationManager(&mAnimations, &mFiles);
+        mAnimationManager = new AnimationManager(&mAssets);
         connect(mAnimationManager, &AnimationManager::requestSave, this, &MainWindow::saveAnimations);
         connect(mAnimationManager, &AnimationManager::destroyed, this, &MainWindow::closeAnimationEditor);
+        connect(ui->MdiArea, &QMdiArea::subWindowActivated, mAnimationManager, &AnimationManager::focusChange);
         ui->MdiArea->addSubWindow(mAnimationManager);
         mAnimationManager->show();
     }
@@ -109,7 +135,7 @@ void MainWindow::saveAssets()
     AssetsFile.open(QIODevice::ReadWrite);
 
     QJsonObject assets;
-    mFiles.writeJSON(assets);
+    mAssets.writeJSON(Asset::File, assets);
 
     QJsonDocument saveDoc(assets);
     AssetsFile.write(saveDoc.toJson());
@@ -124,7 +150,7 @@ void MainWindow::saveAnimations()
     AnimationFile.open(QIODevice::ReadWrite);
 
     QJsonObject anims;
-    mAnimations.writeJSON(anims);
+    mAssets.writeJSON(Asset::Animation, anims);
 
     QJsonDocument saveDoc(anims);
     AnimationFile.write(saveDoc.toJson());
@@ -139,7 +165,7 @@ void MainWindow::saveParticles()
     ParticleFile.open(QIODevice::ReadWrite);
 
     QJsonObject particles;
-    mParticles.writeJSON(particles);
+    mAssets.writeJSON(Asset::Particle, particles);
 
     QJsonDocument saveDoc(particles);
     ParticleFile.write(saveDoc.toJson());

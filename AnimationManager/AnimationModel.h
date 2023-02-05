@@ -1,29 +1,17 @@
-#ifndef ASSETMODEL_H
-#define ASSETMODEL_H
+#ifndef ANIMATIONMODEL_H
+#define ANIMATIONMODEL_H
 
 #include <QAbstractTableModel>
-#include "Asset.h"
-
-#include "FileManager/File.h"
 #include "AnimationManager/Animation.h"
-#include "ParticleManager/Particle.h"
 
-class AssetModel : public QAbstractTableModel
+class AnimationModel : public QAbstractTableModel
 {
     Q_OBJECT
 
     public:
-        enum AssetColumn{
+        enum Columns{
             ID = 0,
             Name = 1,
-            Type = 2
-        };
-
-        enum FileColumn{
-            Path = 3
-        };
-
-        enum AnimationColumn{
             TextureUID = 2,
             FrameCount = 3,
             RectWidth = 4,
@@ -32,15 +20,8 @@ class AssetModel : public QAbstractTableModel
             TimerMode = 7
         };
 
-        enum ParticleColumns{
-            LifeTime = 3,
-            Color = 4,
-        };
-
     public:
-        explicit AssetModel(QObject *parent = nullptr);
-
-        void setType(unsigned int type);
+        explicit AnimationModel(QObject *parent = nullptr);
 
         // Header:
         QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -58,37 +39,22 @@ class AssetModel : public QAbstractTableModel
         bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
         void sort(int column, Qt::SortOrder order) override;
 
-        // Assets functions
-        const QVector<Asset *> &getAssets();
+        // Animations functions
+        const QVector<Animation>& getAnimations();
         unsigned long long getUID(QModelIndex index);
-
-        void removeAsset(unsigned int type, Asset::UID uid);
-        void removeFile(unsigned long long uid);
         void removeAnimation(Animation::UID uid);
-        void removeParticle(Particle::UID uid);
-
-        void addFile(File file);
-        void addAnimation(Animation anim);
-        void addParticle(Particle anim);
-
-        Asset* getAsset(int row);
-        File getFile(int row);
-        Animation getAnimation(int row);
-        Particle getParticle(int row);
-        Asset* getByUID(unsigned int type, unsigned long long UID);
+        void addAnimation(Animation animation);
+        const Animation getAnimation(int row);
+        const Animation getByUID(unsigned long long UID);
 
         //JSON functions
         bool readJSON(QJsonObject& json);
-        void writeJSON(unsigned int type, QJsonObject& json);
+        void writeJSON(QJsonObject& json);
         bool loadFromFile(QString path);
 
     private:
-
-        unsigned int mType;
-        QVector<Asset*> mAssets;
         QVector<Animation> mAnimations;
-        QVector<File> mFiles;
-        QVector<Particle> mParticles;
+
 };
 
-#endif // ASSETMODEL_H
+#endif // ANIMATIONMODEL_H

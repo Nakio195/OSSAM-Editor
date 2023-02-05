@@ -4,28 +4,30 @@ unsigned long long Asset::sUID = 1;
 
 Asset::Asset(Asset::Type type, QString name) :
     mName(name),
-    mType(type)
+    mBaseType(type)
 {
-    if(type != Invalid)
-    {
-        mID = sUID;
-        sUID++;
-    }
+    mUID = sUID;
+    sUID++;
+}
+
+Asset::~Asset()
+{
+
 }
 
 Asset::UID Asset::getUID() const
 {
-    return mID;
+    return mUID;
 }
 
-void Asset::setType(Asset::Type type)
+void Asset::setBaseType(Asset::Type type)
 {
-    mType = type;
+    mBaseType = type;
 }
 
-Asset::Type Asset::getType() const
+Asset::Type Asset::getBaseType() const
 {
-    return mType;
+    return mBaseType;
 }
 
 void Asset::setName(QString name)
@@ -42,16 +44,15 @@ QString Asset::TypeToText(Asset::Type type)
 {
     switch(type)
     {
-        case Texture:
-            return QString("Texture");
-        case Font:
-            return QString("Police");
-        case Shader:
-            return QString("Shader");
-        case Sound:
-            return QString("Son");
-
         case Invalid:
+            return QString("Asset");
+        case File:
+            return QString("Fichier");
+        case Animation:
+            return QString("Animation");
+        case Particle:
+            return QString("Particule");
+
         default:
             return QString("Invalide");
     }
@@ -59,32 +60,15 @@ QString Asset::TypeToText(Asset::Type type)
 
 Asset::Type Asset::TypeFromText(QString text)
 {
-    if(text == QString("Texture"))
-        return Asset::Texture;
-    if(text == QString("Police"))
-        return Asset::Font;
-    if(text == QString("Shader"))
-        return Asset::Shader;
-    if(text == QString("Son"))
-        return Asset::Sound;
+    if(text == QString("File"))
+        return Asset::File;
+    if(text == QString("Animation"))
+        return Asset::Animation;
+    if(text == QString("Particle"))
+        return Asset::Particle;
 
     return Asset::Invalid;
 }
-
-void Asset::toJSON(QJsonObject& asset) const
-{
-    asset.insert("uid", QJsonValue(QString::number(mID)));
-    asset.insert("name", QJsonValue(mName));
-    asset.insert("type", QJsonValue(TypeToText(mType)));
-}
-
-void Asset::fromJSON(const QJsonObject &json)
-{
-    mID = json.value("uid").toString().toULongLong();
-    mName = json.value("name").toString();
-    mType = TypeFromText(json.value("type").toString());
-}
-
 
 void Asset::setCurrentUID(unsigned long long uid)
 {

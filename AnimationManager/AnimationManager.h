@@ -2,9 +2,9 @@
 #define ANIMATIONMANAGER_H
 
 #include <QWidget>
+#include <QMdiSubWindow>
 #include <QSortFilterProxyModel>
-#include "FileManager/FileModel.h"
-#include "AnimationManager/AnimationModel.h"
+#include "AssetModel.h"
 
 namespace Ui {
 class AnimationManager;
@@ -15,7 +15,7 @@ class AnimationManager : public QWidget
     Q_OBJECT
 
     public:
-        explicit AnimationManager(AnimationModel* anims, FileModel* assets,  QWidget *parent = nullptr);
+        explicit AnimationManager(AssetModel* assets,  QWidget *parent = nullptr);
         ~AnimationManager() override;
 
     public slots:
@@ -23,6 +23,8 @@ class AnimationManager : public QWidget
         void create();
         void remove();
         void save();
+
+        void focusChange(QMdiSubWindow* window);
 
         void selectionChanged(const QModelIndex &current, const QModelIndex &);
 
@@ -35,8 +37,7 @@ class AnimationManager : public QWidget
     private:
         Ui::AnimationManager *ui;
 
-        FileModel* mFiles;
-        AnimationModel *mAnimatons;
+        AssetModel* mAssets;
 
         QSortFilterProxyModel mSearchProxy;
 };

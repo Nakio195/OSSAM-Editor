@@ -40,16 +40,16 @@ SOURCES += main.cpp\
         AnimationManager/Animation.cpp \
         AnimationManager/AnimationCreator.cpp \
         AnimationManager/AnimationManager.cpp \
-        AnimationManager/AnimationModel.cpp \
+    #    AnimationManager/AnimationModel.cpp \
         AnimationManager/AnimationViewer.cpp \
         FileManager/File.cpp \
         FileManager/FileManager.cpp \
-        FileManager/FileModel.cpp \
+    #    FileManager/FileModel.cpp \
         FileManager/FileViewer.cpp \
         ParticleManager/Particle.cpp \
         ParticleManager/ParticleCreator.cpp \
         ParticleManager/ParticleManager.cpp \
-        ParticleManager/ParticleModel.cpp \
+    #    ParticleManager/ParticleModel.cpp \
         ParticleManager/ParticleViewer.cpp \
         SpaceshipManager/SpaceshipEditor.cpp \
         WeaponManager/Weapon.cpp \
@@ -66,16 +66,16 @@ HEADERS  += Asset.h \
         AnimationManager/Animation.h \
         AnimationManager/AnimationCreator.h \
         AnimationManager/AnimationManager.h \
-        AnimationManager/AnimationModel.h \
+    #    AnimationManager/AnimationModel.h \
         AnimationManager/AnimationViewer.h \
         FileManager/File.h \
         FileManager/FileManager.h \
-        FileManager/FileModel.h \
+    #    FileManager/FileModel.h \
         FileManager/FileViewer.h \
         ParticleManager/Particle.h \
         ParticleManager/ParticleCreator.h \
         ParticleManager/ParticleManager.h \
-        ParticleManager/ParticleModel.h \
+    #    ParticleManager/ParticleModel.h \
         ParticleManager/ParticleViewer.h \
         SpaceshipManager/SpaceshipEditor.h \
         WeaponManager/Weapon.h \
