@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QSortFilterProxyModel>
+#include "Context.h"
 #include "FileManager/FileModel.h"
 #include "AnimationManager/AnimationModel.h"
 
@@ -15,7 +16,7 @@ class AnimationManager : public QWidget
     Q_OBJECT
 
     public:
-        explicit AnimationManager(AnimationModel* anims, FileModel* assets,  QWidget *parent = nullptr);
+        explicit AnimationManager(Context* context, QWidget *parent = nullptr);
         ~AnimationManager() override;
 
     public slots:
@@ -35,8 +36,7 @@ class AnimationManager : public QWidget
     private:
         Ui::AnimationManager *ui;
 
-        FileModel* mFiles;
-        AnimationModel *mAnimatons;
+        Context* mContext;
 
         QSortFilterProxyModel mSearchProxy;
 };

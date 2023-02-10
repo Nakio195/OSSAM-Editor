@@ -5,6 +5,8 @@
 #include <QAction>
 #include "widgets/OSSAM_World.h"
 
+#include "Context.h"
+
 #include "FileManager/FileManager.h"
 #include "FileManager/FileModel.h"
 #include "widgets/AssetPicker.h"
@@ -50,14 +52,10 @@ class MainWindow : public QMainWindow
 
         OSSAM::World *mWorld;
 
+        Context mContext;
         FileManager* mFileManager;
-        FileModel mFiles;
-
         AnimationManager *mAnimationManager;
-        AnimationModel mAnimations;
-
         ParticleManager *mParticleManager;
-        ParticleModel mParticles;
 
         QString JSON_AssetPath;
         QString JSON_AnimationPath;

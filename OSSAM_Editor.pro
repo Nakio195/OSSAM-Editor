@@ -34,11 +34,9 @@ win32
 
 
 SOURCES += main.cpp\
-        AnimationManager/Animation.cpp \
-        AnimationManager/AnimationModel.cpp \
-        AnimationManager/AnimationViewer.cpp \
         Asset.cpp \
         AssetModel.cpp \
+        Context.cpp \
         FileManager/File.cpp \
         FileManager/FileManager.cpp \
         FileManager/FileModel.cpp \
@@ -49,10 +47,6 @@ SOURCES += main.cpp\
         AnimationManager/AnimationManager.cpp \
         AnimationManager/AnimationModel.cpp \
         AnimationManager/AnimationViewer.cpp \
-        FileManager/File.cpp \
-        FileManager/FileManager.cpp \
-        FileManager/FileModel.cpp \
-        FileManager/FileViewer.cpp \
         ParticleManager/Particle.cpp \
         ParticleManager/ParticleCreator.cpp \
         ParticleManager/ParticleManager.cpp \
@@ -61,21 +55,15 @@ SOURCES += main.cpp\
         SpaceshipManager/SpaceshipEditor.cpp \
         WeaponManager/Weapon.cpp \
         widgets/AssetPicker.cpp \
+        widgets/ClickableLabel.cpp \
         widgets/EntityData.cpp \
         widgets/OSSAM_World.cpp \
         widgets/QSFMLView.cpp \
         widgets/SpaceshipData.cpp \
-        widgets/ClickableLabel.cpp
 
 HEADERS  += Asset.h \
-        AnimationManager/Animation.h \
-        AnimationManager/AnimationModel.h \
-        AnimationManager/AnimationViewer.h \
         AssetModel.h \
-        FileManager/File.h \
-        FileManager/FileManager.h \
-        FileManager/FileModel.h \
-        FileManager/FileViewer.h \
+        Context.h \
         MainWindow.h \
         AnimationManager/Animation.h \
         AnimationManager/AnimationCreator.h \
@@ -104,8 +92,6 @@ FORMS    += MainWindow.ui \
         AnimationManager/AnimationCreator.ui \
         AnimationManager/AnimationManager.ui \
         FileManager/FileManager.ui \
-        FileManager/FileManager.ui \
-        FileManager/FileViewer.ui \
         FileManager/FileViewer.ui \
         ParticleManager/ParticleCreator.ui \
         ParticleManager/ParticleManager.ui \
@@ -116,3 +102,4 @@ FORMS    += MainWindow.ui \
 
 RESOURCES += \
     icons.qrc
+

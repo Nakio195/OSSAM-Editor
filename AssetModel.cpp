@@ -54,17 +54,17 @@ void AssetModel::sort(int column, Qt::SortOrder order)
     if(column == ID)
     {
         if(order == Qt::AscendingOrder)
-            qSort(mAssets.begin(), mAssets.end(), [] (const Asset& a, const Asset& b) { return a.getUID() < b.getUID();});
+            qSort(mAssets.begin(), mAssets.end(), [] (const Asset* a, const Asset* b) { return a->getUID() < b->getUID();});
         else
-            qSort(mAssets.begin(), mAssets.end(), [] (const Asset& a, const Asset& b) { return a.getUID() > b.getUID();});
+            qSort(mAssets.begin(), mAssets.end(), [] (const Asset* a, const Asset* b) { return a->getUID() > b->getUID();});
     }
 
     if(column == Name)
     {
         if(order == Qt::AscendingOrder)
-            qSort(mAssets.begin(), mAssets.end(), [] (const Asset& a, const Asset& b) { return a.getName() < b.getName();});
+            qSort(mAssets.begin(), mAssets.end(), [] (const Asset* a, const Asset* b) { return a->getName() < b->getName();});
         else
-            qSort(mAssets.begin(), mAssets.end(), [] (const Asset& a, const Asset& b) { return a.getName() > b.getName();});
+            qSort(mAssets.begin(), mAssets.end(), [] (const Asset* a, const Asset* b) { return a->getName() > b->getName();});
     }
 
     layoutChanged();
@@ -83,9 +83,9 @@ QVariant AssetModel::data(const QModelIndex &index, int role) const
         switch(index.column())
         {
             case AssetModel::ID:
-                return QVariant(QString::number(mAssets[index.row()].getUID()));
+                return QVariant(QString::number(mAssets[index.row()]->getUID()));
             case AssetModel::Name:
-                return QVariant(mAssets[index.row()].getName());
+                return QVariant(mAssets[index.row()]->getName());
         }
     }
     return QVariant();
@@ -103,7 +103,7 @@ bool AssetModel::setData(const QModelIndex &index, const QVariant &value, int ro
                     break;
 
                 case AssetModel::Name:
-                    mAssets[index.row()].setName(value.toString());
+                    mAssets[index.row()]->setName(value.toString());
                     emit dataChanged(index, index, {role});
                     return true;
             }
@@ -135,81 +135,28 @@ bool AssetModel::insertColumns(int , int , const QModelIndex &)
 }
 
 
-const QVector<Asset>& AssetModel::getAssets()
+const QVector<Asset*>& AssetModel::getAssets()
 {
     return mAssets;
 }
 
-bool AssetModel::readJSON(QJsonObject &json)
-{
-    if(json.contains("Assets") && json["Assets"].isArray())
-    {
-        unsigned long long maxUID = 0;
-        QJsonArray array = json["Assets"].toArray();
-
-        beginResetModel();
-        mAssets.clear();
-        endResetModel();
-
-        beginInsertRows(QModelIndex(), 0, array.size());
-
-        mAssets.reserve(array.size());
-
-        for(int row = 0; row < array.size(); row++)
-        {
-            QJsonObject json = array[row].toObject();
-            Asset asset;
-            asset.fromJSON(json);
-
-            mAssets.push_back(asset);
-
-            if(asset.getUID() > maxUID)
-                maxUID = asset.getUID();
-        }
-
-        Asset::setCurrentUID(maxUID+1);
-
-        endInsertRows();
-
-        return true;
-    }
-
-    return false;
-}
-
-void AssetModel::writeJSON(QJsonObject& json)
-{
-    json.insert("count", QString::number(mAssets.count()));
-
-    QJsonArray animArray;
-    for(auto& Asset : mAssets)
-    {
-        QJsonObject obj;
-        Asset.toJSON(obj);
-        animArray.append(obj);
-    }
-
-    json.insert("Assets", animArray);
-
-}
-
-const Asset AssetModel::getAsset(int row)
+Asset* AssetModel::getAsset(int row)
 {
     if(row >= mAssets.count())
-        return Asset();
+        return nullptr;
 
-    return mAssets[row];
+    return  mAssets[row];
 }
 
-const Asset AssetModel::getByUID(Asset::UID uid)
+Asset* AssetModel::getByUID(Asset::UID uid)
 {
-    for(auto& anim : mAssets)
+    for(auto& asset : mAssets)
     {
-        if(anim.getUID() == uid)
-            return anim;
+        if(asset->getUID() == uid)
+            return asset;
     }
 
-    return Asset();
+    return nullptr;
 }
 
 void AssetModel::removeAsset(Asset::UID uid)
@@ -218,7 +165,7 @@ void AssetModel::removeAsset(Asset::UID uid)
 
     for(int i = 0; i < mAssets.count(); i++)
     {
-        if(mAssets[i].getUID() == uid)
+        if(mAssets[i]->getUID() == uid)
         {
             row = i;
             break;
@@ -233,34 +180,17 @@ void AssetModel::removeAsset(Asset::UID uid)
     endRemoveRows();
 }
 
-void AssetModel::addAsset(Asset anim)
+void AssetModel::addAsset(Asset *asset)
 {
     beginInsertRows(QModelIndex(), mAssets.count(), mAssets.count());
-    mAssets.insert(mAssets.count(), anim);
+    mAssets.insert(mAssets.count(), asset);
     endInsertRows();
 }
 
 unsigned long long AssetModel::getUID(QModelIndex index)
 {
-    if(!index.isValid())
+    if(!index.isValid() || index.row() > mAssets.count())
         return 0;
 
-    return mAssets[index.row()].getUID();
+    return mAssets[index.row()]->getUID();
 }
-
-bool AssetModel::loadFromFile(QString path)
-{
-    QFile AnimFile(path);
-
-    if(!AnimFile.open(QIODevice::ReadOnly))
-        QMessageBox::critical(nullptr, "Erreur plutôt critique quand même", "Impossible d'accéder au fichier de sauvegarde des Assets : " + path);
-    else
-    {
-        QJsonObject Assets(QJsonDocument::fromJson(AnimFile.readAll()).object());
-        readJSON(Assets);
-
-        return true;
-    }
-    return false;
-}
-

@@ -5,8 +5,8 @@
 #include <QFile>
 #include <QMessageBox>
 
-ParticleModel::ParticleModel(QObject *parent)
-    : QAbstractTableModel(parent)
+ParticleModel::ParticleModel(AssetModel *assets, QObject *parent)
+    : QAbstractTableModel(parent), mAssets(assets)
 {
 }
 
@@ -191,6 +191,7 @@ bool ParticleModel::readJSON(QJsonObject &json)
             anim.fromJSON(json);
 
             mParticles.push_back(anim);
+            mAssets->addAsset(&mParticles.last());
 
             if(anim.getUID() > maxUID)
                 maxUID = anim.getUID();
@@ -266,6 +267,7 @@ void ParticleModel::addParticle(Particle anim)
 {
     beginInsertRows(QModelIndex(), mParticles.count(), mParticles.count());
     mParticles.insert(mParticles.count(), anim);
+    mAssets->addAsset(&mParticles.last());
     endInsertRows();
 }
 

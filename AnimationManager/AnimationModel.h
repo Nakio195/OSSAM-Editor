@@ -2,6 +2,7 @@
 #define ANIMATIONMODEL_H
 
 #include <QAbstractTableModel>
+#include "AssetModel.h"
 #include "AnimationManager/Animation.h"
 
 class AnimationModel : public QAbstractTableModel
@@ -21,7 +22,7 @@ class AnimationModel : public QAbstractTableModel
         };
 
     public:
-        explicit AnimationModel(QObject *parent = nullptr);
+        explicit AnimationModel(AssetModel* assets, QObject *parent = nullptr);
 
         // Header:
         QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -53,6 +54,7 @@ class AnimationModel : public QAbstractTableModel
         bool loadFromFile(QString path);
 
     private:
+        AssetModel* mAssets;
         QVector<Animation> mAnimations;
 
 };

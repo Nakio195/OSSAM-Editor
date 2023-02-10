@@ -11,28 +11,27 @@
 #include <QCloseEvent>
 
 
-FileManager::FileManager(AssetModel *assets, QWidget *parent) :
+FileManager::FileManager(Context *context, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FileManager),
-    mAssets(assets)
+    mContext(context)
 {
     ui->setupUi(this);
 
     mCurrentUID = 0;
     mPendingChanges = false;
 
-    mAssets->setType(Asset::File);
-    mMapper.setModel(mAssets);
-    mMapper.addMapping(ui->ln_UID, AssetModel::ID);
-    mMapper.addMapping(ui->ln_Name, AssetModel::Name);
-    mMapper.addMapping(ui->ln_Path, AssetModel::Path);
+    mMapper.setModel(mContext->files());
+    mMapper.addMapping(ui->ln_UID, FileModel::ID);
+    mMapper.addMapping(ui->ln_Name, FileModel::Name);
+    mMapper.addMapping(ui->ln_Path, FileModel::Path);
 
-    ui->tableView->setModel(mAssets);
+    ui->tableView->setModel(mContext->files());
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    ui->tableView->horizontalHeader()->setSortIndicator(AssetModel::Type, Qt::AscendingOrder);
-    ui->tableView->sortByColumn(AssetModel::Type, Qt::AscendingOrder);
-    mSearchProxy.setSourceModel(mAssets);
-    mSearchProxy.setFilterKeyColumn(AssetModel::Name);
+    ui->tableView->horizontalHeader()->setSortIndicator(FileModel::Type, Qt::AscendingOrder);
+    ui->tableView->sortByColumn(FileModel::Type, Qt::AscendingOrder);
+    mSearchProxy.setSourceModel(mContext->files());
+    mSearchProxy.setFilterKeyColumn(FileModel::Name);
     mSearchProxy.setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     ui->grp_Mapper->setEnabled(false);
@@ -40,7 +39,7 @@ FileManager::FileManager(AssetModel *assets, QWidget *parent) :
     setFocusPolicy(Qt::FocusPolicy::TabFocus);
 
     connect(ui->tableView->selectionModel(), QOverload<const QModelIndex&, const QModelIndex&>::of(&QItemSelectionModel::currentRowChanged), this, &FileManager::selectionChanged);
-    connect(mAssets, &AssetModel::dataChanged, this, &FileManager::saveChanges);
+    connect(mContext->files(), &AssetModel::dataChanged, this, &FileManager::saveChanges);
 }
 
 FileManager::~FileManager()
@@ -54,7 +53,6 @@ void FileManager::focusChange(QMdiSubWindow* window)
     {
         if(window->widget() == this)
         {
-            mAssets->setType(Asset::File);
             ui->tableView->setUpdatesEnabled(true);
         }
 
@@ -101,13 +99,13 @@ void FileManager::rowChanged(QModelIndex index)
 
     if(ui->ln_search->text() == QString(""))
     {
-        mCurrentUID = mAssets->getUID(index);
+        mCurrentUID = mContext->files()->getUID(index);
         mMapper.setCurrentIndex(index.row());
     }
 
     else
     {
-        mCurrentUID = mAssets->getUID(mSearchProxy.mapToSource(index));
+        mCurrentUID = mContext->files()->getUID(mSearchProxy.mapToSource(index));
         mMapper.setCurrentIndex(mSearchProxy.mapToSource(index).row());
     }
 
@@ -122,7 +120,7 @@ void FileManager::saveChanges()
 void FileManager::search(QString string)
 {
     if(string == QString(""))
-        ui->tableView->setModel(mAssets);
+        ui->tableView->setModel(mContext->files());
 
     else
     {
@@ -157,7 +155,7 @@ void FileManager::createFile()
 {
     QString path = browse();
     QString name;
-    File::Type type;
+    Asset::Type type;
 
     // Autodeduce type and name from browsed file
     if(path.contains(QString("png")) || path.contains(QString("jpg")) || path.contains(QString("bmp")))
@@ -176,8 +174,8 @@ void FileManager::createFile()
     QDir dir;
     path = dir.relativeFilePath(path);
 
-    File newFile(type, path, name);
-    mAssets->addFile(newFile);
+    File newFile(type, name, path);
+    mContext->files()->addFile(newFile);
     saveChanges();
 }
 
@@ -186,12 +184,12 @@ void FileManager::removeFile()
     if(mCurrentUID == 0)
         return;
 
-    QString name = mAssets->getByUID(Asset::File, mCurrentUID)->getName();
+    QString name = mContext->files()->getByUID(mCurrentUID).getName();
     auto answer = QMessageBox::question(this, "Confirmation", "Voulez vous supprimer " + name + " ?");
 
     if(answer == QMessageBox::Yes)
     {
-       mAssets->removeFile(mCurrentUID);
+       mContext->files()->removeFile(mCurrentUID);
        mCurrentUID = 0;
        ui->grp_Mapper->setEnabled(false);
        mMapper.setCurrentIndex(0);
@@ -205,9 +203,8 @@ void FileManager::updateViewer()
 {
     if(mCurrentUID == 0)
         return;
-    File* asset = dynamic_cast<File*>(mAssets->getByUID(Asset::File, mCurrentUID));
+    File asset = mContext->files()->getByUID(mCurrentUID);
 
-    if(asset != nullptr)
-        ui->fileViewer->setFile(*asset);
+    ui->fileViewer->setFile(asset);
 }
 

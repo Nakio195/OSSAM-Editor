@@ -8,8 +8,8 @@
 #include <QFile>
 #include <QMessageBox>
 
-FileModel::FileModel(QObject *parent)
-    : QAbstractTableModel(parent)
+FileModel::FileModel(AssetModel *assets, QObject *parent)
+    : QAbstractTableModel(parent), mAssets(assets)
 {
 
 }
@@ -190,10 +190,10 @@ const QVector<File>& FileModel::getFiles()
 
 bool FileModel::readJSON(QJsonObject &json)
 {
-    if(json.contains("Files") && json["Files"].isArray())
+    if(json.contains("files") && json["files"].isArray())
     {
         unsigned long long maxUID = 0;
-        QJsonArray array = json["Files"].toArray();
+        QJsonArray array = json["files"].toArray();
 
         beginResetModel();
         mFiles.clear();
@@ -210,6 +210,7 @@ bool FileModel::readJSON(QJsonObject &json)
             file.fromJSON(json);
 
             mFiles.push_back(file);
+            mAssets->addAsset(&mFiles.last());
 
             if(file.getUID() > maxUID)
                 maxUID = file.getUID();
@@ -238,7 +239,7 @@ void FileModel::writeJSON(QJsonObject& json)
         FileArray.append(obj);
     }
 
-    json.insert("Files", FileArray);
+    json.insert("files", FileArray);
 
 }
 
@@ -286,6 +287,7 @@ void FileModel::addFile(File file)
 {
     beginInsertRows(QModelIndex(), mFiles.count(), mFiles.count());
     mFiles.insert(mFiles.count(), file);
+    mAssets->addAsset(&mFiles.last());
     endInsertRows();
 }
 

@@ -4,10 +4,10 @@
 #include "widgets/AssetPicker.h"
 #include <QColorDialog>
 
-ParticleCreator::ParticleCreator(AssetModel* assets, QWidget *parent) :
+ParticleCreator::ParticleCreator(Context *context, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ParticleCreator),
-    mAssets(assets)
+    mContext(context)
 {
     ui->setupUi(this);
     ui->clr_viewer->setAutoFillBackground(true);
@@ -46,14 +46,14 @@ void ParticleCreator::pickColor()
 
 void ParticleCreator::browseAsset()
 {
-    Asset temp = AssetPicker::pick(mAssets, this, Asset::Texture);
+    File temp = mContext->files()->getByUID(AssetPicker::pick(mContext, this, Asset::Texture));
     mParticle.setTextureUID(temp.getUID());
     ui->ln_texture->setText(temp.getName());
 }
 
-Particle ParticleCreator::create(AssetModel* assets, QWidget *parent)
+Particle ParticleCreator::create(Context* context, QWidget *parent)
 {
-    ParticleCreator picker(assets, parent);
+    ParticleCreator picker(context, parent);
 
     if(picker.exec() == QDialog::Accepted)
         return picker.getParticle();

@@ -5,26 +5,25 @@
 #include <QCloseEvent>
 #include "ParticleCreator.h"
 
-ParticleManager::ParticleManager(ParticleModel* particles, FileModel *files,  QWidget *parent) :
+ParticleManager::ParticleManager(Context* context,  QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ParticleManager),
-    mFiles(files),
-    mParticles(particles)
+    mContext(context)
 {
     ui->setupUi(this);
 
     ui->btn_Save->setEnabled(false);
 
-    ui->table->setModel(mParticles);
+    ui->table->setModel(mContext->particles());
     ui->table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->table->horizontalHeader()->setSortIndicator(ParticleModel::Name, Qt::AscendingOrder);
     ui->table->sortByColumn(ParticleModel::Name, Qt::AscendingOrder);
-    mSearchProxy.setSourceModel(mParticles);
+    mSearchProxy.setSourceModel(mContext->particles());
     mSearchProxy.setFilterKeyColumn(ParticleModel::Name);
     mSearchProxy.setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     connect(ui->table->selectionModel(), QOverload<const QModelIndex&, const QModelIndex&>::of(&QItemSelectionModel::currentRowChanged), this, &ParticleManager::selectionChanged);
-    connect(mParticles, &QAbstractTableModel::dataChanged, this, &ParticleManager::selectionChanged);
+    connect(mContext->particles(), &QAbstractTableModel::dataChanged, this, &ParticleManager::selectionChanged);
 
     connect(ui->btn_delete, &QCommandLinkButton::clicked, this, &ParticleManager::remove);
     connect(ui->btn_add, &QCommandLinkButton::clicked, this, &ParticleManager::create);
@@ -58,7 +57,7 @@ void ParticleManager::search(QString string)
 {
     if(string == QString(""))
     {
-        ui->table->setModel(mParticles);
+        ui->table->setModel(mContext->particles());
     }
 
     else
@@ -73,18 +72,18 @@ void ParticleManager::selectionChanged(const QModelIndex &current, const QModelI
     if(!current.isValid())
         return;
 
-    Particle anim = mParticles->getParticle(current.row());
-    ui->viewer->setTexture(mFiles->getByUID(anim.getTextureUID()).getPath());
+    Particle anim = mContext->particles()->getParticle(current.row());
+    ui->viewer->setTexture(mContext->files()->getByUID(anim.getTextureUID()).getPath());
     ui->viewer->setParticle(anim);
 }
 
 void ParticleManager::create()
 {
-    Particle anim = ParticleCreator::create(mFiles, this);
+    Particle anim = ParticleCreator::create(mContext, this);
 
     if(anim.getName() != QString("Invalid"))
     {
-        mParticles->addParticle(anim);
+        mContext->particles()->addParticle(anim);
         ui->btn_Save->setEnabled(true);
     }
 }
@@ -93,8 +92,8 @@ void ParticleManager::remove()
 {
     if(ui->table->selectionModel()->hasSelection())
     {
-        Particle::UID currentUID = mParticles->getParticle(ui->table->selectionModel()->selectedRows().first().row()).getUID();
-        mParticles->removeParticle(currentUID);
+        Particle::UID currentUID = mContext->particles()->getParticle(ui->table->selectionModel()->selectedRows().first().row()).getUID();
+        mContext->particles()->removeParticle(currentUID);
         ui->btn_Save->setEnabled(true);
     }
 }

@@ -6,16 +6,21 @@ Asset::Asset(Asset::Type type, QString name) :
     mName(name),
     mType(type)
 {
-    if(type != Invalid)
+    if(mType != Asset::Invalid)
     {
-        mID = sUID;
+        mUID = sUID;
         sUID++;
     }
 }
 
+Asset::~Asset()
+{
+
+}
+
 Asset::UID Asset::getUID() const
 {
-    return mID;
+    return mUID;
 }
 
 void Asset::setType(Asset::Type type)
@@ -42,16 +47,23 @@ QString Asset::TypeToText(Asset::Type type)
 {
     switch(type)
     {
+        case Invalid:
+            return QString("Asset");
+        case File:
+            return QString("Fichier");
+        case Animation:
+            return QString("Animation");
+        case Particle:
+            return QString("Particule");
         case Texture:
             return QString("Texture");
-        case Font:
-            return QString("Police");
-        case Shader:
-            return QString("Shader");
         case Sound:
             return QString("Son");
+        case Shader:
+            return QString("Shader");
+        case Font:
+            return QString("Police");
 
-        case Invalid:
         default:
             return QString("Invalide");
     }
@@ -59,6 +71,12 @@ QString Asset::TypeToText(Asset::Type type)
 
 Asset::Type Asset::TypeFromText(QString text)
 {
+    if(text == QString("File"))
+        return Asset::File;
+    if(text == QString("Animation"))
+        return Asset::Animation;
+    if(text == QString("Particle"))
+        return Asset::Particle;
     if(text == QString("Texture"))
         return Asset::Texture;
     if(text == QString("Police"))
@@ -70,21 +88,6 @@ Asset::Type Asset::TypeFromText(QString text)
 
     return Asset::Invalid;
 }
-
-void Asset::toJSON(QJsonObject& asset) const
-{
-    asset.insert("uid", QJsonValue(QString::number(mID)));
-    asset.insert("name", QJsonValue(mName));
-    asset.insert("type", QJsonValue(TypeToText(mType)));
-}
-
-void Asset::fromJSON(const QJsonObject &json)
-{
-    mID = json.value("uid").toString().toULongLong();
-    mName = json.value("name").toString();
-    mType = TypeFromText(json.value("type").toString());
-}
-
 
 void Asset::setCurrentUID(unsigned long long uid)
 {

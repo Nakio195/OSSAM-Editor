@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>430</width>
-    <height>350</height>
+    <height>374</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -443,7 +443,7 @@
    <sender>toolButton</sender>
    <signal>clicked()</signal>
    <receiver>AnimationCreator</receiver>
-   <slot>browseAsset()</slot>
+   <slot>browseFiles()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>221</x>
@@ -474,7 +474,7 @@
  </connections>
  <slots>
   <slot>parametersEdited()</slot>
-  <slot>browseAsset()</slot>
+  <slot>browseFiles()</slot>
   <slot>setBackgroundColor()</slot>
  </slots>
 </ui>

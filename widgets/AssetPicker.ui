@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Asset Picker</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0" rowspan="2" colspan="4">
@@ -35,7 +35,7 @@
     <widget class="QLineEdit" name="ln_search"/>
    </item>
    <item row="1" column="4" rowspan="2">
-    <widget class="AssetViewer" name="fileViewer" native="true"/>
+    <widget class="FileViewer" name="fileViewer" native="true"/>
    </item>
    <item row="3" column="1" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox_2">
@@ -48,7 +48,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>AssetViewer</class>
+   <class>FileViewer</class>
    <extends>QWidget</extends>
    <header>FileManager/FileViewer.h</header>
    <container>1</container>

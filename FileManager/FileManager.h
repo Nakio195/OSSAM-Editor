@@ -9,7 +9,7 @@
 #include <QSortFilterProxyModel>
 
 #include "FileManager/File.h"
-#include "AssetModel.h"
+#include "Context.h"
 
 
 namespace Ui{
@@ -21,7 +21,7 @@ class FileManager : public QWidget
     Q_OBJECT
 
     public:
-        explicit FileManager(AssetModel *assets, QWidget *parent = nullptr);
+        explicit FileManager(Context *context, QWidget *parent = nullptr);
         ~FileManager();
 
         const File getByUID(unsigned long long UID);
@@ -58,7 +58,7 @@ class FileManager : public QWidget
 
         unsigned long long mCurrentUID;
 
-        AssetModel* mAssets;
+        Context* mContext;
         QSortFilterProxyModel mSearchProxy;
 
         bool mPendingChanges;

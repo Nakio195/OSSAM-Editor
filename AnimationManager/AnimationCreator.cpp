@@ -4,10 +4,10 @@
 #include <QColorDialog>
 #include "widgets/AssetPicker.h"
 
-AnimationCreator::AnimationCreator(FileModel* files, QWidget *parent) :
+AnimationCreator::AnimationCreator(Context *context, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AnimationCreator),
-    mFiles(files)
+    mContext(context)
 {
     ui->setupUi(this);
     mTexture = File(File::Invalid);
@@ -30,11 +30,11 @@ void AnimationCreator::textureChanged(const sf::Texture& texture)
     ui->lbl_property->setText(QString("Largeur : ") + QString::number(texture.getSize().x) + " px\r\nHauteur : " + QString::number(texture.getSize().y) + " px");
 }
 
-void AnimationCreator::browseFile()
+void AnimationCreator::browseFiles()
 {
-    mTexture = AssetPicker::pick(mFiles, this, File::Texture);
+    mTexture = mContext->files()->getByUID(AssetPicker::pick(mContext, this, Asset::Texture));
 
-    if(mTexture.getType() != File::Invalid)
+    if(mTexture.getType() != Asset::Invalid)
     {
        ui->ln_Asset->setText(mTexture.getName());
        ui->viewer->setTexture(mTexture.getPath());
@@ -72,9 +72,9 @@ void AnimationCreator::setBackgroundColor()
     ui->viewer->setBackgroundColor(QColorDialog::getColor());
 }
 
-Animation AnimationCreator::create(FileModel *Files, QWidget *parent)
+Animation AnimationCreator::create(Context* context, QWidget *parent)
 {
-    AnimationCreator picker(Files, parent);
+    AnimationCreator picker(context, parent);
 
     if(picker.exec() == QDialog::Accepted)
         return picker.getAnimation();

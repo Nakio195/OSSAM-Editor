@@ -4,7 +4,7 @@
 #include <QDialog>
 #include "FileManager/FileModel.h"
 #include "ParticleManager/Particle.h"
-#include "AssetModel.h"
+#include "Context.h"
 
 
 namespace Ui {
@@ -16,12 +16,12 @@ class ParticleCreator : public QDialog
     Q_OBJECT
 
     public:
-        explicit ParticleCreator(AssetModel* assets, QWidget *parent = nullptr);
+        explicit ParticleCreator(Context* context, QWidget *parent = nullptr);
         ~ParticleCreator();
 
         Particle getParticle();
 
-        static Particle create(AssetModel* assets, QWidget *parent);
+        static Particle create(Context* context, QWidget *parent);
 
     public slots:
         void browseAsset();
@@ -33,7 +33,7 @@ class ParticleCreator : public QDialog
         Particle mParticle;
 
         Ui::ParticleCreator *ui;
-        AssetModel* mAssets;
+        Context* mContext;
 };
 
 #endif // PARTICLECREATOR_H

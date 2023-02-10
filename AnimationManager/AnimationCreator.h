@@ -3,8 +3,7 @@
 
 #include <SFML/Graphics/Texture.hpp>
 #include <QDialog>
-#include "FileManager/FileModel.h"
-#include "AnimationManager/Animation.h"
+#include "Context.h"
 
 namespace Ui {
 class AnimationCreator;
@@ -15,10 +14,10 @@ class AnimationCreator : public QDialog
     Q_OBJECT
 
     public:
-        explicit AnimationCreator(AssetModel* assets, QWidget *parent = nullptr);
+        explicit AnimationCreator(Context* context, QWidget *parent = nullptr);
         ~AnimationCreator();
 
-        static Animation create(AssetModel* assets, QWidget *parent);
+        static Animation create(Context* context, QWidget *parent);
 
         Animation getAnimation();
 
@@ -26,7 +25,7 @@ class AnimationCreator : public QDialog
         void requestSave();
 
     private slots:
-        void browseFile();
+        void browseFiles();
         void parametersEdited();
         void textureChanged(const sf::Texture& texture);
 
@@ -34,8 +33,8 @@ class AnimationCreator : public QDialog
 
     private:
         Ui::AnimationCreator *ui;
-        FileModel* mFiles;
-        AssetModel *mAssets;
+
+        Context *mContext;
 
         File mTexture;
         Animation mAnimation;

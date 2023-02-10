@@ -3,6 +3,7 @@
 
 #include <QAbstractTableModel>
 #include "ParticleManager/Particle.h"
+#include "AssetModel.h"
 
 class ParticleModel : public QAbstractTableModel
 {
@@ -18,7 +19,7 @@ class ParticleModel : public QAbstractTableModel
         };
 
     public:
-        explicit ParticleModel(QObject *parent = nullptr);
+        explicit ParticleModel(AssetModel *assets, QObject *parent = nullptr);
 
         // Header:
         QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -51,6 +52,7 @@ class ParticleModel : public QAbstractTableModel
 
     private:
         QVector<Particle> mParticles;
+        AssetModel* mAssets;
 };
 
 #endif // PARTICLEMODEL_H

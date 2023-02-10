@@ -2,10 +2,10 @@
 #define ASSETPICKER_H
 
 #include <QDialog>
-#include "Asset.h"
-#include "AssetModel.h"
 #include <QModelIndex>
 #include <QSortFilterProxyModel>
+
+#include "Context.h"
 
 namespace Ui {
 class Dialog;
@@ -16,22 +16,25 @@ class AssetPicker : public QDialog
     Q_OBJECT
 
     public:
-        explicit AssetPicker(AssetModel* assets, QWidget *parent = nullptr, Asset::Type type = Asset::Invalid);
+        explicit AssetPicker(Context* context, QWidget *parent = nullptr, Asset::Type type = Asset::Invalid);
         ~AssetPicker();
 
-        static Asset pick(AssetModel* assets, QWidget *parent = nullptr, Asset::Type type = Asset::Invalid);
+        static Asset::UID pick(Context* context, QWidget *parent = nullptr, Asset::Type type = Asset::Invalid);
 
     private slots:
         void selectionChanged(const QModelIndex&, const QModelIndex& column);
         void search(QString string);
 
     private:
-        Asset selectedAsset();
+        Asset::UID selectedAsset();
 
     private:
         Ui::Dialog *ui;
 
-        AssetModel* mAssets;
+        QAbstractItemModel* mSourceModel;
+        Context* mContext;
+        Asset::Type mType;
+
         QSortFilterProxyModel mFilter;
         QSortFilterProxyModel mSearch;
 

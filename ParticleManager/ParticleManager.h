@@ -3,8 +3,7 @@
 
 #include <QWidget>
 #include <QSortFilterProxyModel>
-#include "ParticleManager/ParticleModel.h"
-#include "FileManager/FileModel.h"
+#include "Context.h"
 
 namespace Ui {
 class ParticleManager;
@@ -15,7 +14,7 @@ class ParticleManager : public QWidget
     Q_OBJECT
 
     public:
-        explicit ParticleManager(ParticleModel* particles, FileModel* files,  QWidget *parent = nullptr);
+        explicit ParticleManager(Context *context,  QWidget *parent = nullptr);
         ~ParticleManager() override;
 
     public slots:
@@ -35,8 +34,7 @@ class ParticleManager : public QWidget
     private:
         Ui::ParticleManager *ui;
 
-        FileModel* mFiles;
-        ParticleModel *mParticles;
+        Context* mContext;
 
         QSortFilterProxyModel mSearchProxy;
 

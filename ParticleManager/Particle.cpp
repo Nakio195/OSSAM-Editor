@@ -1,21 +1,11 @@
 #include "Particle.h"
 
-unsigned long long Particle::sUID = 1;
 
 Particle::Particle()
 {
-    mUID = sUID;
-    sUID++;
-
     mLifeTime = 0.1f;
     mTexture = 0;
     mColor.setRgb(0, 0, 0);
-}
-
-
-Particle::UID Particle::getUID() const
-{
-    return mUID;
 }
 
 QString Particle::getName() const
@@ -57,11 +47,6 @@ void Particle::setLifeTime(float time)
 void Particle::setTextureUID(Asset::UID uid)
 {
     mTexture = uid;
-}
-
-void Particle::setCurrentUID(UID uid)
-{
-    sUID = uid;
 }
 
 void Particle::toJSON(QJsonObject& Particle) const

@@ -35,20 +35,15 @@ class AssetModel : public QAbstractTableModel
         void sort(int column, Qt::SortOrder order) override;
 
         // Assets functions
-        const QVector<Asset>& getAssets();
+        const QVector<Asset *> &getAssets();
         unsigned long long getUID(QModelIndex index);
         void removeAsset(Asset::UID uid);
-        void addAsset(Asset asset);
-        const Asset getAsset(int row);
-        const Asset getByUID(unsigned long long UID);
-
-        //JSON functions
-        bool readJSON(QJsonObject& json);
-        void writeJSON(QJsonObject& json);
-        bool loadFromFile(QString path);
+        void addAsset(Asset *asset);
+        Asset* getAsset(int row);
+        Asset* getByUID(unsigned long long UID);
 
     private:
-        QVector<Asset> mAssets;
+        QVector<Asset*> mAssets;
 };
 
 #endif // ASSETMODEL_H

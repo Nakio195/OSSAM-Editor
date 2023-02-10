@@ -11,7 +11,7 @@ class FileModel : public QAbstractTableModel
     Q_OBJECT
 
     public:
-        explicit FileModel(QObject *parent = nullptr);
+        explicit FileModel(AssetModel* assets, QObject *parent = nullptr);
 
         enum Columns{
             ID = 0,

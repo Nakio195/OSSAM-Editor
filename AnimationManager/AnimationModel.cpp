@@ -5,8 +5,8 @@
 #include <QFile>
 #include <QMessageBox>
 
-AnimationModel::AnimationModel(QObject *parent)
-    : QAbstractTableModel(parent)
+AnimationModel::AnimationModel(AssetModel *assets, QObject *parent)
+    : QAbstractTableModel(parent), mAssets(assets)
 {
 }
 
@@ -193,6 +193,7 @@ bool AnimationModel::readJSON(QJsonObject &json)
             anim.fromJSON(json);
 
             mAnimations.push_back(anim);
+            mAssets->addAsset(&mAnimations.last());
 
             if(anim.getUID() > maxUID)
                 maxUID = anim.getUID();
@@ -268,6 +269,7 @@ void AnimationModel::addAnimation(Animation anim)
 {
     beginInsertRows(QModelIndex(), mAnimations.count(), mAnimations.count());
     mAnimations.insert(mAnimations.count(), anim);
+    mAssets->addAsset(&mAnimations.last());
     endInsertRows();
 }
 
